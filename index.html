@@ -2,142 +2,180 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Обо мне</title
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER_DATA // ACCESS_GRANTED</title>
     <style>
         :root {
-            --main-purple: #a020f0;
-            --dark-purple: #240046;
-            --glow: 0 0 10px #a020f0, 0 0 20px #7b2cbf;
+            --neon-purple: #bc13fe;
+            --dark-void: #0a0012;
+            --border-glow: 0 0 15px rgba(188, 19, 254, 0.6);
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            background-color: #05000a;
-            color: var(--main-purple);
+            background-color: var(--dark-void);
+            color: var(--neon-purple);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            overflow: hidden;
+            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-            text-shadow: var(--glow);
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Фоновая сетка и шум */
-        .overlay {
+        /* Фоновые помехи */
+        body::before {
+            content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px);
             pointer-events: none;
-            z-index: 10;
+            z-index: 100;
         }
 
-        /* Стиль логотипа Solver */
-        .solver-icon {
-            width: 150px;
-            height: 150px;
-            border: 4px solid var(--main-purple);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite, rotate 10s linear infinite;
-            box-shadow: var(--glow), inset var(--glow);
-        }
-
-        /* Эффект глитча для текста */
-        .glitch {
-            font-size: 3rem;
-            font-weight: bold;
-            text-transform: uppercase;
+        .container {
+            width: 100%;
+            max-width: 800px;
+            border: 2px solid var(--neon-purple);
+            padding: 40px;
             position: relative;
-            animation: glitch 1s linear infinite;
+            background: rgba(20, 0, 35, 0.8);
+            box-shadow: var(--border-glow), inset var(--border-glow);
         }
 
-        .terminal {
-            background: rgba(36, 0, 70, 0.2);
-            border: 1px solid var(--main-purple);
-            padding: 20px;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 0 15px rgba(160, 32, 240, 0.3);
+        /* Декоративные уголки как в интерфейсе Дронов */
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 4px solid var(--neon-purple);
+        }
+        .top-left { top: -5px; left: -5px; border-right: none; border-bottom: none; }
+        .top-right { top: -5px; right: -5px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: -5px; left: -5px; border-right: none; border-top: none; }
+        .bottom-right { bottom: -5px; right: -5px; border-left: none; border-top: none; }
+
+        .header {
+            text-align: center;
+            border-bottom: 1px solid var(--neon-purple);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
         }
 
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 20px;
-            background: var(--main-purple);
-            animation: blink 0.8s infinite;
+        .glitch-name {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            animation: glitch 3s infinite;
         }
 
-        /* Анимации */
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+        .section {
+            margin-bottom: 25px;
+            border-left: 3px solid var(--neon-purple);
+            padding-left: 15px;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .section-title {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 10px;
+            display: block;
+            color: #fff;
         }
 
-        @keyframes blink {
-            50% { opacity: 0; }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            background: rgba(188, 19, 254, 0.1);
+            padding: 10px;
+            border: 1px solid rgba(188, 19, 254, 0.3);
+        }
+
+        .status-bar {
+            width: 100%;
+            height: 10px;
+            border: 1px solid var(--neon-purple);
+            margin-top: 5px;
+            position: relative;
+        }
+
+        .fill {
+            height: 100%;
+            background: var(--neon-purple);
+            width: 75%; /* Уровень прогресса */
+            box-shadow: 0 0 10px var(--neon-purple);
         }
 
         @keyframes glitch {
-            2%, 64% { transform: translate(2px, 0) skew(0deg); }
-            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
-            62% { transform: translate(0, 0) skew(5deg); }
+            0% { text-shadow: 2px 0 red, -2px 0 blue; }
+            5% { text-shadow: -2px 0 red, 2px 0 blue; }
+            10% { text-shadow: 2px 0 red, -2px 0 blue; }
+            15% { text-shadow: none; }
+            100% { text-shadow: none; }
         }
 
-        .status-line {
-            margin: 5px 0;
-            font-size: 1.1rem;
+        .solver-bg {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 100px;
+            opacity: 0.1;
+            user-select: none;
+            pointer-events: none;
         }
 
-        button {
-            background: transparent;
-            color: var(--main-purple);
-            border: 1px solid var(--main-purple);
-            padding: 10px 20px;
-            margin-top: 20px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.3s;
-        }
+        a { color: #fff; text-decoration: none; border-bottom: 1px dashed var(--neon-purple); }
+        a:hover { background: var(--neon-purple); color: #000; }
 
-        button:hover {
-            background: var(--main-purple);
-            color: #000;
-            box-shadow: var(--glow);
-        }
     </style>
 </head>
 <body>
 
-<div class="overlay"></div>
+<div class="container">
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
 
-<div class="solver-icon">✕</div>
+    <div class="header">
+        <h1 class="glitch-name">DrZeon.sys</h1>
+        <p style="font-size: 0.9rem;">[ AUTHORIZATION: ABSOLUTE SOLVER ]</p>
+    </div>
 
-<h1 class="glitch">CYN_SYSTEM.exe</h1>
+    <div class="section">
+        <span class="section-title">БИОГРАФИЯ</span>
+        <p>Запись данных... Я человек (или дрон?), увлекающийся созданием странных вещей. Обожаю эстетику киберпанка, глитч-арт и фиолетовые оттенки.</p>
+    </div>
 
-<div class="terminal">
-    <div class="status-line">> INITIALIZING ABSOLUTE SOLVER...</div>
-    <div class="status-line">> ACCESSING HOST: [NULL]</div>
-    <div class="status-line">> STATUS: <span style="color: #ff00ff;">CONVERGING</span></div>
-    <div class="status-line">> "Get snuck upon." <span class="cursor"></span></div>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="section-title">НАВЫКИ</span>
+            • Кодинг: <div class="status-bar"><div class="fill" style="width: 85%;"></div></div>
+            • Дизайн: <div class="status-bar"><div class="fill" style="width: 60%;"></div></div>
+        </div>
+        <div class="info-item">
+            <span class="section-title">ХАРАКТЕРИСТИКИ</span>
+            Тип: Solver_Host<br>
+            Версия: 2.0.26<br>
+            Статус: ONLINE
+        </div>
+    </div>
+
+    <div class="section" style="margin-top: 20px;">
+        <span class="section-title">КОНТАКТЫ</span>
+        > ГИТХАБ: <a href="#">github.com/DrZeon</a>
+    </div>
+
+    <div class="solver-bg">✕</div>
 </div>
-
-<button onclick="alert('NULL')">REBOOT SYSTEM</button>
 
 </body>
 </html>
-
