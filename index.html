@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USER_DATA // ACCESS_GRANTED</title>
+    <title>DrZeon // OVERRIDE</title>
     <style>
         :root {
             --neon-purple: #bc13fe;
             --dark-void: #0a0012;
-            --border-glow: 0 0 15px rgba(188, 19, 254, 0.6);
+            --low-glow: rgba(188, 19, 254, 0.2);
+            --border-glow: 0 0 20px rgba(188, 19, 254, 0.4);
         }
 
         * { box-sizing: border-box; }
@@ -18,164 +19,183 @@
             color: var(--neon-purple);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
+            border: 4px solid var(--neon-purple); /* Общая рамка экрана */
         }
 
-        /* Фоновые помехи */
-        body::before {
-            content: "";
+        /* Сканирующие линии монитора */
+        body::after {
+            content: " ";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px);
-            pointer-events: none;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             z-index: 100;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
         }
 
-        .container {
+        /* Шапка на всю ширину */
+        header {
             width: 100%;
-            max-width: 800px;
-            border: 2px solid var(--neon-purple);
-            padding: 40px;
-            position: relative;
-            background: rgba(20, 0, 35, 0.8);
-            box-shadow: var(--border-glow), inset var(--border-glow);
-        }
-
-        /* Декоративные уголки как в интерфейсе Дронов */
-        .corner {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 4px solid var(--neon-purple);
-        }
-        .top-left { top: -5px; left: -5px; border-right: none; border-bottom: none; }
-        .top-right { top: -5px; right: -5px; border-left: none; border-bottom: none; }
-        .bottom-left { bottom: -5px; left: -5px; border-right: none; border-top: none; }
-        .bottom-right { bottom: -5px; right: -5px; border-left: none; border-top: none; }
-
-        .header {
-            text-align: center;
-            border-bottom: 1px solid var(--neon-purple);
-            margin-bottom: 30px;
-            padding-bottom: 10px;
+            padding: 20px;
+            border-bottom: 2px solid var(--neon-purple);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(20, 0, 35, 0.9);
+            box-shadow: var(--border-glow);
         }
 
         .glitch-name {
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+            font-size: 2rem;
             margin: 0;
-            animation: glitch 3s infinite;
+            text-transform: uppercase;
+            animation: glitch 4s infinite;
         }
 
-        .section {
-            margin-bottom: 25px;
-            border-left: 3px solid var(--neon-purple);
-            padding-left: 15px;
+        /* Главный макет: две колонки */
+        .main-wrapper {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Левая панель (Статус) */
+        .sidebar {
+            width: 300px;
+            border: 1px solid var(--neon-purple);
+            padding: 15px;
+            background: rgba(188, 19, 254, 0.05);
+        }
+
+        /* Центральный блок (Контент) */
+        .content {
+            flex: 1;
+            border: 1px solid var(--neon-purple);
+            padding: 30px;
+            position: relative;
+            background: rgba(10, 0, 18, 0.6);
         }
 
         .section-title {
+            background: var(--neon-purple);
+            color: black;
+            padding: 5px 10px;
             font-weight: bold;
-            text-decoration: underline;
-            margin-bottom: 10px;
-            display: block;
-            color: #fff;
+            display: inline-block;
+            margin-bottom: 15px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .big-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
         }
 
-        .info-item {
-            background: rgba(188, 19, 254, 0.1);
-            padding: 10px;
-            border: 1px solid rgba(188, 19, 254, 0.3);
-        }
-
+        /* Стили полосок прогресса */
+        .skill-row { margin-bottom: 20px; }
         .status-bar {
             width: 100%;
-            height: 10px;
+            height: 15px;
             border: 1px solid var(--neon-purple);
             margin-top: 5px;
-            position: relative;
         }
-
         .fill {
             height: 100%;
             background: var(--neon-purple);
-            width: 75%; /* Уровень прогресса */
-            box-shadow: 0 0 10px var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
         }
 
+        /* Футер */
+        footer {
+            padding: 10px 20px;
+            border-top: 1px solid var(--neon-purple);
+            font-size: 0.8rem;
+            text-align: right;
+        }
+
+        /* Анимации */
         @keyframes glitch {
-            0% { text-shadow: 2px 0 red, -2px 0 blue; }
-            5% { text-shadow: -2px 0 red, 2px 0 blue; }
-            10% { text-shadow: 2px 0 red, -2px 0 blue; }
-            15% { text-shadow: none; }
-            100% { text-shadow: none; }
+            0% { transform: translate(0); }
+            1% { transform: translate(-2px, 2px); text-shadow: 2px 0 red; }
+            2% { transform: translate(2px, -2px); text-shadow: -2px 0 blue; }
+            3% { transform: translate(0); text-shadow: none; }
         }
 
-        .solver-bg {
-            position: absolute;
-            right: 20px;
-            bottom: 20px;
-            font-size: 100px;
-            opacity: 0.1;
-            user-select: none;
-            pointer-events: none;
+        .solver-icon {
+            font-size: 40px;
+            animation: rotate 10s linear infinite;
+            display: inline-block;
         }
 
-        a { color: #fff; text-decoration: none; border-bottom: 1px dashed var(--neon-purple); }
-        a:hover { background: var(--neon-purple); color: #000; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+        a { color: white; text-shadow: 0 0 5px var(--neon-purple); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="corner top-left"></div>
-    <div class="corner top-right"></div>
-    <div class="corner bottom-left"></div>
-    <div class="corner bottom-right"></div>
-
-    <div class="header">
-        <h1 class="glitch-name">DrZeon.sys</h1>
-        <p style="font-size: 0.9rem;">[ AUTHORIZATION: ABSOLUTE SOLVER ]</p>
+<header>
+    <div>
+        <span class="solver-icon">✕</span>
+        <h1 class="glitch-name" style="display: inline-block; margin-left: 15px;">DrZeon.sys</h1>
     </div>
-
-    <div class="section">
-        <span class="section-title">БИОГРАФИЯ</span>
-        <p>Запись данных... Я человек (или дрон?), увлекающийся созданием странных вещей. Обожаю эстетику киберпанка, глитч-арт и фиолетовые оттенки.</p>
+    <div style="text-align: right;">
+        [ STATUS: <span style="color: #00ff00;">CONNECTED</span> ]<br>
+        [ HOST: Cyn_V2 ]
     </div>
+</header>
 
-    <div class="info-grid">
-        <div class="info-item">
-            <span class="section-title">НАВЫКИ</span>
-            • Кодинг: <div class="status-bar"><div class="fill" style="width: 85%;"></div></div>
-            • Дизайн: <div class="status-bar"><div class="fill" style="width: 60%;"></div></div>
+<div class="main-wrapper">
+    <aside class="sidebar">
+        <div class="section-title">SYSTEM_CORE</div>
+        <p>• TYPE: Administrator</p>
+        <p>• VERSION: 2.0.26</p>
+        <p>• LOC: [NULL]</p>
+        <hr style="border: 0; border-top: 1px solid var(--neon-purple); margin: 20px 0;">
+        <div class="section-title">SKILLS_LOADED</div>
+        
+        <div class="skill-row">
+            Кодинг [85%]
+            <div class="status-bar"><div class="fill" style="width: 85%;"></div></div>
         </div>
-        <div class="info-item">
-            <span class="section-title">ХАРАКТЕРИСТИКИ</span>
-            Тип: Solver_Host<br>
-            Версия: 2.0.26<br>
-            Статус: ONLINE
+        <div class="skill-row">
+            Дизайн [30%]
+            <div class="status-bar"><div class="fill" style="width: 60%;"></div></div>
         </div>
-    </div>
+        <div class="skill-row">
+            Глитч-арт [85%]
+            <div class="status-bar"><div class="fill" style="width: 100%;"></div></div>
+        </div>
+    </aside>
 
-    <div class="section" style="margin-top: 20px;">
-        <span class="section-title">КОНТАКТЫ</span>
-        > ГИТХАБ: <a href="#">github.com/DrZeon</a>
-    </div>
+    <main class="content">
+        <div class="section-title">LOG_FILE: BIOGRAPHY</div>
+        <p class="big-text">
+            Запись данных инициирована... Я — DrZeon. Мое существование связано с созданием цифровых миров и изучением эстетики разрушения. 
+            Специализируюсь на "странных вещах", которые ломают привычное восприятие. 
+            Любимый цвет: <b>Фиолетовый спектр</b>. Любимая среда: <b>Киберпанк / Absolute Solver</b>.
+        </p>
 
-    <div class="solver-bg">✕</div>
+        <div class="section-title">DATA_RESOURCES</div>
+        <p>Для связи или коллаборации используйте зашифрованные каналы:</p>
+        <ul style="list-style: ' > '; padding-left: 20px;">
+            <li>ГИТХАБ: <a href="https://github.com/DrZeon" target="_blank">github.com/DrZeon</a></li>
+        </ul>
+
+        <div style="position: absolute; bottom: 20px; right: 20px; opacity: 0.2; font-size: 150px; pointer-events: none;">
+            ✕
+        </div>
+    </main>
 </div>
+
+<footer>
+    © 3071 ABSOLUTE_SOLVER_CORP. ВСЕ ПРАВА ПОГЛОЩЕНЫ.
+</footer>
 
 </body>
 </html>
